@@ -1,0 +1,17 @@
+header {
+    margin-bottom: 50px;
+}
+
+.d-flex.form {
+    flex-direction: column;
+}
+
+textarea {
+    height: 200px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+h6 {
+    margin: 20px 0;
+}

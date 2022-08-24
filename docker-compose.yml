@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  nginx:
+    image: nginx:1.17-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./etc/infrastructure/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/app/public:ro
+    depends_on:
+      - php
+  php:
+    container_name: word_counter
+    build:
+      dockerfile: etc/artifacts/Dockerfile
+      context: .
+      target: dev
+    ports:
+      - "9000:9000"
+    environment:
+      - XDEBUG_CLIENT_HOST=host.docker.internal
+    volumes:
+      - ./:/app:rw,delegated
+      - /app/var/
+      - /app/var/cache/
+      - /app/var/logs/
+      - /app/var/sessions/
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    platform: linux/amd64
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./etc/infrastructure/dev/mysql:/etc/mysql/conf.d:ro
+      - ./mysqldb:/var/lib/mysql
+    tmpfs:
+      - /tmp/:rw,noexec,nosuid,size=50m
+    environment:
+      - MYSQL_ROOT_PASSWORD=api
+      - MYSQL_DATABASE=blog
