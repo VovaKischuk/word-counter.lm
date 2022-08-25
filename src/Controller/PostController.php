@@ -11,9 +11,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     #[Route(path: '', name: 'posts_list', methods: [Request::METHOD_GET])]
-    public function listAction(PostService $service): Response
+    public function listAction(Request $request, PostService $service): Response
     {
-        $posts = $service->findList();
+        $search = $request->query->get('search', '');
+        $sort = $request->query->get('sort', '');
+
+        $posts = $service->findList($search, $sort);
 
         return $this->render('posts.html.twig', [
             'result' => $posts

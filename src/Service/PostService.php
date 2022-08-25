@@ -12,9 +12,16 @@ class PostService
     {
     }
 
-    public function findList(): array
+    public function findList(string $search = '', string $sort = 'ASC'): array
     {
-        $posts = $this->em->getRepository(Post::class)->findAll();
+        $qb = $this->em->createQueryBuilder();
+        $posts = $qb
+            ->select('p')
+            ->from(Post::class, 'p')
+            ->where($qb->expr()->like('p.title', $qb->expr()->literal("%{$search}%")))
+            ->orderBy('p.id', $sort)
+            ->getQuery()
+            ->getResult();
 
         if ($posts === null) {
             throw new NotFoundHttpException();
