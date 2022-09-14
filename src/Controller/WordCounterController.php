@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 class WordCounterController extends AbstractController
 {
     #[Route('/', name: 'word_counter', methods: [Request::METHOD_GET])]

@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
+
+use TypeError;
 
 class WordStatisticService
 {
     public function madeStatistics(?string $text): array
     {
+        if (!is_string($text)) {
+            throw new TypeError('Input must be an string.');
+        }
+
         $timeStart = microtime(true);
         $text = iconv('UTF-8','windows-1251', $text);
 
@@ -63,12 +71,12 @@ class WordStatisticService
         return strlen($str) ?? 0;
     }
 
-    function numberOfWords(string $text): int
+    public function numberOfWords(string $text): int
     {
         return str_word_count($text) ?? 0;
     }
 
-    function numberOfSentences($text): int
+    public function numberOfSentences($text): int
     {
         return preg_match_all('/\S([.!?])(?!\w)/', $text) ?? 0;
     }
@@ -102,7 +110,7 @@ class WordStatisticService
             $result += $this->numberOfCharacters($word);
         }
 
-        return $result / $numberOfCharacters;
+        return $numberOfCharacters == 0 ? $result : $result / $numberOfCharacters;
     }
 
     public function averageWordSentence(string $text): float|int
@@ -115,7 +123,7 @@ class WordStatisticService
             $result += count(str_word_count($sentence, 2));
         }
 
-        return $result / $arraySentenceCount;
+        return $arraySentenceCount == 0 ? $result : $result / $arraySentenceCount;
     }
 
     public function mostUsedWords(string $text): array
